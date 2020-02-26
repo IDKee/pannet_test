@@ -4,19 +4,6 @@ server:
 
 
 spring:
-
-  #配置freemaker
-  freemarker:
-    request-context-attribute: request #req访问request
-    suffix: .ftl #后缀
-    content-type: text/html
-    charset: UTF-8
-    cache: false
-    template-loader-path: classpath:/templates/ #模板加载路径 按需配置
-    enabled: true
-    settings:
-      number_format: '0.##'   #数字格式化，无小数点
-
   profiles:
     active: dev
 
