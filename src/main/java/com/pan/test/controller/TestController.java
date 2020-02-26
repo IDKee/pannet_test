@@ -28,8 +28,10 @@ public class TestController {
 
     @GetMapping("test")
     public String test(){
-        LambdaQueryWrapper<Test> wrapper = new LambdaQueryWrapper<>();
-        List list = testService.selectList(wrapper);
+        Test test = testService.selectOne(new LambdaQueryWrapper<Test>());
+        request.setAttribute("test", test);
+
+        List<Test> list = testService.selectListAll();
         request.setAttribute("list", list);
         return "test/test";
     }

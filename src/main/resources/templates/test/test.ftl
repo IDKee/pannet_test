@@ -7,8 +7,10 @@
 <body>
     <div style="color: red">panjie123 </div>
 
+    <div>${test.title!}</div>
+
 <#list list as list>
-    <div>${list.title!}</div>
+    <div style="color: blue">${list.title!}</div>
 </#list>
 </body>
 </html>

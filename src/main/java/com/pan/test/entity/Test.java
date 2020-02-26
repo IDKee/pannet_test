@@ -3,6 +3,12 @@ package com.pan.test.entity;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
+/**
+*
+* @author : panjie
+* @date : 2020/2/26
+*/
+
 @Data
 @TableName(value = "t_test")
 public class Test {

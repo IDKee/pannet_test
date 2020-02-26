@@ -1,13 +1,12 @@
-package com.pan.common;
+package com.pan.common.mybatis;
 
-/**
- * <p>
- * 字段策略枚举类
- * </p>
- *
- * @author hubin
- * @since 2016-09-09
- */
+
+/** 
+* 
+* @author : panjie 
+* @date : 2020/2/26
+*/
+
 public enum FieldStrategy {
     /**
      * 忽略判断
