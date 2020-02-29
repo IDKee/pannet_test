@@ -1,6 +1,6 @@
 server:
   servlet:
-    context-path: /pannet
+    context-path: /
 
 
 spring:

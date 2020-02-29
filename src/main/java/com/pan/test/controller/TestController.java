@@ -28,7 +28,9 @@ public class TestController {
 
     @GetMapping("test")
     public String test(){
-        Test test = testService.selectOne(new LambdaQueryWrapper<Test>());
+        LambdaQueryWrapper<Test> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.last("limit 1");
+        Test test = testService.selectOne(queryWrapper);
         request.setAttribute("test", test);
 
         List<Test> list = testService.selectListAll();
