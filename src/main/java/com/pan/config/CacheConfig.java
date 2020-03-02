@@ -30,7 +30,7 @@ public class CacheConfig extends CachingConfigurerSupport {
         RedisSerializationContext.SerializationPair serializationPair =
                 RedisSerializationContext.SerializationPair.fromSerializer(getRedisSerializer());
         RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration.defaultCacheConfig()
-                .entryTtl(Duration.ofSeconds(30))
+                .entryTtl(Duration.ofHours(1))
                 .serializeValuesWith(serializationPair);
         return RedisCacheManager
                 .builder(RedisCacheWriter.nonLockingRedisCacheWriter(connectionFactory))
