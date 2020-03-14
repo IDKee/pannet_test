@@ -83,4 +83,4 @@ mybatis-plus:
 
 logging:
   file:
-    name: pannet.log
+    name: logs/pannet.log
