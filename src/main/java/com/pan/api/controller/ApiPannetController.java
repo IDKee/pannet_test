@@ -28,7 +28,7 @@ public class ApiPannetController {
 
     @GetMapping(value = "/getTestByTitle")
     @ApiOperation("根据title查询Test的接口")
-    @ApiImplicitParam(name = "title", value = "用户id", required = false)
+    @ApiImplicitParam(name = "title", value = "标题", required = false)
     public List<Test> getTestByTitle(String title){
         LambdaQueryWrapper<Test> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.like(Test::getTitle, title);

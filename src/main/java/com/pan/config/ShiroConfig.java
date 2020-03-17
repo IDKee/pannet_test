@@ -102,9 +102,9 @@ public class ShiroConfig {
         // 拦截器.
         Map<String, String> map = new LinkedHashMap<String, String>();
 
+        map.put("/swagger-ui.html", "anon");
         map.put("/logout", "logout");
         map.put("/login", "anon");
-        map.put("/logon", "anon");
 
         map.put("/**", "authc");
 
