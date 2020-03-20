@@ -3,6 +3,8 @@ package com.pan.test.entity;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
+import java.io.Serializable;
+
 /**
 *
 * @author : panjie
@@ -11,7 +13,7 @@ import lombok.Data;
 
 @Data
 @TableName(value = "t_test")
-public class Test {
+public class Test implements Serializable {
 
     private int id;
 

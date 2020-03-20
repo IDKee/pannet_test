@@ -7,3 +7,5 @@ spring:
   profiles:
     active: dev
 
+my: @project.basedir@
+

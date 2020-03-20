@@ -21,11 +21,11 @@ import java.time.Duration;
 * @date : 2020/2/27
 */
 
-@Configuration
-@EnableCaching
+///@Configuration
+//@EnableCaching
 public class CacheConfig extends CachingConfigurerSupport {
 
-    @Bean
+    //@Bean
     public CacheManager redisCacheManager(RedisConnectionFactory connectionFactory) {
         RedisSerializationContext.SerializationPair serializationPair =
                 RedisSerializationContext.SerializationPair.fromSerializer(getRedisSerializer());

@@ -5,6 +5,7 @@ import com.pan.common.util.UuidUtil;
 import com.pan.sys.entity.User;
 import com.pan.sys.service.UserService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
@@ -13,13 +14,15 @@ import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.crypto.hash.SimpleHash;
 import org.apache.shiro.realm.AuthorizingRealm;
+import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.util.ByteSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 
-import java.util.UUID;
-
+/**
+ * @author Administrator
+ */
 @Slf4j
 public class UserRealm extends AuthorizingRealm {
 
@@ -42,6 +45,8 @@ public class UserRealm extends AuthorizingRealm {
         String principal = authenticationToken.getPrincipal().toString();
         User user = userService.selectOne(new LambdaQueryWrapper<User>().eq(User::getUsername, principal));
         SimpleAuthenticationInfo authenticationInfo = new SimpleAuthenticationInfo(user, user.getPassword(), ByteSource.Util.bytes(user.getSalt()), this.getName());
+        Session session = SecurityUtils.getSubject().getSession();
+        session.setAttribute("shiroUser", user);
         return authenticationInfo;
     }
 
