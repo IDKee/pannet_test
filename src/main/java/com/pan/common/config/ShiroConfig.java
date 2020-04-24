@@ -1,17 +1,18 @@
-package com.pan.config;
+package com.pan.common.config;
 
+import com.pan.common.constants.ServiceConstants;
+import com.pan.common.redis.RedisCacheManager;
+import com.pan.common.redis.RedisSessionDAO;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
-import org.apache.shiro.cache.CacheManager;
 import org.apache.shiro.mgt.SessionsSecurityManager;
 import org.apache.shiro.session.mgt.SessionManager;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.spring.web.config.DefaultShiroFilterChainDefinition;
 import org.apache.shiro.spring.web.config.ShiroFilterChainDefinition;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
+import org.apache.shiro.web.servlet.SimpleCookie;
 import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
-import org.crazycake.shiro.RedisCacheManager;
-import org.crazycake.shiro.RedisManager;
-import org.crazycake.shiro.RedisSessionDAO;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -21,8 +22,12 @@ import java.util.Map;
 @Configuration
 public class ShiroConfig {
 
+    /**
+     * 不需要在此处配置权限页面,因为上面的ShiroFilterFactoryBean已经配置过,
+     * 是此处必须存在,因为shiro-spring-boot-web-starter或查找此Bean,没有会报错
+     * @return
+     */
     @Bean
-    //不需要在此处配置权限页面,因为上面的ShiroFilterFactoryBean已经配置过,但是此处必须存在,因为shiro-spring-boot-web-starter或查找此Bean,没有会报错
     public ShiroFilterChainDefinition shiroFilterChainDefinition() {
         return new DefaultShiroFilterChainDefinition();
     }
@@ -67,7 +72,6 @@ public class ShiroConfig {
         //配置认证器
         webSecurityManager.setRealm(userRealm());
         webSecurityManager.setSessionManager(sessionManager());
-        webSecurityManager.setCacheManager(redisCacheManager());
         return webSecurityManager;
     }
 
@@ -101,60 +105,63 @@ public class ShiroConfig {
 
 
     /**
-     * Session Manager
-     * 使用的是shiro-redis开源插件
-     */
-    @Bean
-    public SessionManager sessionManager() {
-        DefaultWebSessionManager sessionManager = new DefaultWebSessionManager();
-        sessionManager.setSessionDAO(redisSessionDAO());
-        return sessionManager;
-    }
-
-    /**
-     * cacheManager 缓存 redis实现
-     * 使用的是shiro-redis开源插件
-     *
+     * redis缓存管理
      * @return
      */
     @Bean
     public RedisCacheManager redisCacheManager() {
+        return new RedisCacheManager();
+    }
 
-        RedisCacheManager redisCacheManager = new RedisCacheManager();
-        redisCacheManager.setRedisManager(redisManager());
-        redisCacheManager.setExpire(3000);
-        //指定存入Redis的主键
-        redisCacheManager.setPrincipalIdFieldName("id");
-        return redisCacheManager;
+    @Bean
+    public RedisSessionDAO getRedisSessionDao() {
+        RedisSessionDAO sessionDAO = new RedisSessionDAO();
+        return sessionDAO;
     }
 
     /**
-     * 配置shiro redisManager
-     * 使用的是shiro-redis开源插件
-     *
+     * shiro的session管理
+     * 从配置文件注入globalSessionTimeout属性
+     * @return
      */
     @Bean
-    public RedisManager redisManager() {
-        RedisManager redisManager = new RedisManager();
-        redisManager.setHost("47.93.255.105:6379");
-        redisManager.setPassword("panjie@9482");
-        redisManager.setDatabase(0);
-        return redisManager;
+    @ConfigurationProperties(prefix="shiro")
+    public SessionManager sessionManager() {
+        //因为@Bean执行比@Value快，为了先注入@Value，只能把@Value作为函数的参数声明了
+        DefaultWebSessionManager sessionManager = new DefaultWebSessionManager();
+        //自定义redis的sessionDao
+        sessionManager.setSessionDAO(getRedisSessionDao());
+        //sessionManager.setGlobalSessionTimeout(getSessionTimeout(1800)*1000);//设置全局session超时时间 ms
+        //sessionManager.setCacheManager(redisCacheManager());
+        //启用自定义的SessionIdCookie
+        sessionManager.setSessionIdCookieEnabled(true);
+        //自定义SessionIdCookie
+        sessionManager.setSessionIdCookie(sessionIdCookie());
+        //关闭URL中带上JSESSIONID
+        sessionManager.setSessionIdUrlRewritingEnabled(false);
+        //定时检查失效的session
+        sessionManager.setSessionValidationSchedulerEnabled(true);
+        //启用删除无效sessioin
+        sessionManager.setDeleteInvalidSessions(true);
+        return sessionManager;
     }
 
     /**
-     * RedisSessionDAO shiro sessionDao层的实现 通过redis
-     * 使用的是shiro-redis开源插件
+     * sessionIdCookie的实现,用于重写覆盖容器默认的JSESSIONID
+     * @return
      */
     @Bean
-    public RedisSessionDAO redisSessionDAO() {
-        RedisSessionDAO redisSessionDAO = new RedisSessionDAO();
-        redisSessionDAO.setRedisManager(redisManager());
-        //配置session失效时间单位秒
-        redisSessionDAO.setExpire(3000);
-        return redisSessionDAO;
+    public SimpleCookie sessionIdCookie() {
+        SimpleCookie simpleCookie = new SimpleCookie();
+        //cookie的name,对应的默认是 JSESSIONID
+        simpleCookie.setName(ServiceConstants.SHIRO_SESSION_COOKIES);
+        //设置浏览器关闭才删除cookie
+        simpleCookie.setMaxAge(-1);
+        simpleCookie.setPath("/");
+        //只支持http
+        simpleCookie.setHttpOnly(true);
+        return simpleCookie;
     }
-
 
 
 }

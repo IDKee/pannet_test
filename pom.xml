@@ -120,11 +120,11 @@
         </dependency>
 
         <!-- shiro+redis缓存插件 -->
-        <dependency>
+        <!--<dependency>
             <groupId>org.crazycake</groupId>
             <artifactId>shiro-redis-spring-boot-starter</artifactId>
             <version>3.2.1</version>
-        </dependency>
+        </dependency>-->
     </dependencies>
 
     <build>

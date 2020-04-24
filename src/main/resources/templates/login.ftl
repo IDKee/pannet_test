@@ -34,6 +34,7 @@ ${path}
             data: $('#form').serialize(),
             success: function (result) {
                 console.log(result);//打印服务端返回的数据(调试用)
+                window.location.href="${path}/index";
             },
             error : function() {
                 alert("异常！");

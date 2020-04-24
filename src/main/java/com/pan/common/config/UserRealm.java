@@ -1,4 +1,4 @@
-package com.pan.config;
+package com.pan.common.config;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.pan.common.util.UuidUtil;
