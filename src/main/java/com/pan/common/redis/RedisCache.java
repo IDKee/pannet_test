@@ -26,8 +26,8 @@ public class RedisCache<K, V> implements Cache<K, V> {
     private String cacheKey;
     private RedisTemplate<K, V> redisTemplate;
 
+    /**设置30分钟*/
     @Value("${shiro.globalSessionTimeout}")
-    //设置30分钟
     private Long globExpire;
 
     @SuppressWarnings("rawtypes")
